@@ -26,6 +26,7 @@
 
 #include "json.h"
 #include "debug.h"
+#include "xkcp_util.h"
 #include "xkcp_config.h"
 
 static struct xkcp_config config;
@@ -174,7 +175,12 @@ int xkcp_parse_json_param(struct xkcp_param *param, const char *filename)
 			json_value *value = obj->u.object.values[i].value;
 			if (strcmp(name, "localinterface") == 0) {
 				param->local_interface = parse_json_string(value);
-				debug(LOG_DEBUG, "local_interface is %s", param->local_interface);
+				param->local_addr = get_iface_ip(param->local_interface);
+				debug(LOG_DEBUG, "local_interface is %s, local_addr is %s",
+						param->local_interface, param->local_addr);
+			} else if (strcmp(name, "localaddr") == 0) {
+				param->local_addr = parse_json_string(value);
+				debug(LOG_DEBUG, "local_addr is %s", param->local_addr);
 			} else if (strcmp(name, "localport") == 0) {
 				param->local_port = parse_json_int(value);;
 				debug(LOG_DEBUG, "local_port is %d", param->local_port);

@@ -2,9 +2,14 @@
 #define	_XKCP_UTIL_
 
 #include "ikcp.h"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 
 #define HTTP_IP_ADDR_LEN	16
-#define	OBUF_SIZE 			4096
+#define	OBUF_SIZE 		4096
 #define	BUF_RECV_LEN		1500
 
 struct event;
@@ -14,14 +19,14 @@ struct bufferevent;
 
 struct xkcp_proxy_param {
 	struct event_base 	*base;
-	int 				xkcpfd;
+	int			xkcpfd;
 	struct sockaddr_in	sockaddr;
-	int 				addr_len;
+	int			addr_len;
 };
 
 struct xkcp_task {
-	iqueue_head			head;
-	ikcpcb				*kcp;
+	iqueue_head		head;
+	ikcpcb			*kcp;
 	struct bufferevent 	*bev;
 	struct sockaddr_in	*sockaddr;
 };

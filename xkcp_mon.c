@@ -40,6 +40,8 @@
 #include "debug.h"
 #include "jwHash.h"
 
+#define JDEBUG(fmt, ...) do { printf("[jike][%s-%d] "fmt, __func__, __LINE__, ##__VA_ARGS__); } while (0)
+
 static int xkcp_server_flag = 0;
 
 typedef void (*spy_cmd_process)(struct bufferevent *bev, void *ctx);
@@ -174,24 +176,27 @@ void xkcp_mon_accept_cb(struct evconnlistener *listener, evutil_socket_t fd,
 struct evconnlistener *set_xkcp_mon_listener(struct event_base *base, short port, void *ptr)
 {
 	struct sockaddr_in sin;
-	char *addr = get_iface_ip(xkcp_get_param()->local_interface);
+	char *addr = xkcp_get_param()->local_addr;
+#if 1
+	JDEBUG("addr: %s\n", addr);
+#endif
 	if (!addr) {
-		debug(LOG_ERR, "get_iface_ip [%s] failed", xkcp_get_param()->local_interface);
+		debug(LOG_ERR, "local_addr invalid\n");
 		exit(0);
 	}
 
 	memset(&sin, 0, sizeof(sin));
-    sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = inet_addr(addr);
-    sin.sin_port = htons(port);
+	sin.sin_family = AF_INET;
+	sin.sin_addr.s_addr = inet_addr(addr);
+	sin.sin_port = htons(port);
 
-    struct evconnlistener * listener = evconnlistener_new_bind(base, xkcp_mon_accept_cb, ptr,
-	    LEV_OPT_CLOSE_ON_FREE|LEV_OPT_CLOSE_ON_EXEC|LEV_OPT_REUSEABLE,
-	    -1, (struct sockaddr*)&sin, sizeof(sin));
-    if (!listener) {
-    	debug(LOG_ERR, "Couldn't create listener: [%s]", strerror(errno));
-    	exit(0);
-    }
+	struct evconnlistener * listener = evconnlistener_new_bind(base, xkcp_mon_accept_cb, ptr,
+			LEV_OPT_CLOSE_ON_FREE|LEV_OPT_CLOSE_ON_EXEC|LEV_OPT_REUSEABLE,
+			-1, (struct sockaddr*)&sin, sizeof(sin));
+	if (!listener) {
+		debug(LOG_ERR, "Couldn't create listener: [%s]", strerror(errno));
+		exit(0);
+	}
 
-    return listener;
+	return listener;
 }

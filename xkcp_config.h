@@ -23,13 +23,14 @@
 #define	_XKCP_CONFIG_
 
 struct xkcp_param {
-	char	*local_interface; 	// localaddr
+	char	*local_interface; 	// local_interface
+	char	*local_addr; 		// localaddr
 	char	*remote_addr; 	// remoteaddr
 	char	*key;			// key
 	char	*crypt;			// crypt
 	char	*mode;			// mode
-	int		local_port;		// local tcp listen port
-	int		remote_port;	// remote udp connect port
+	int	local_port;		// local tcp listen port
+	int	remote_port;	// remote udp connect port
 	int 	conn;			// conn
 	int 	auto_expire;	// autoexpire
 	int 	scavenge_ttl;	// scavengettl

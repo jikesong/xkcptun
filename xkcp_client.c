@@ -92,9 +92,9 @@ static struct evconnlistener *set_tcp_proxy_listener(struct event_base *base, vo
 {
 	short lport = xkcp_get_param()->local_port;
 	struct sockaddr_in sin;
-	char *addr = get_iface_ip(xkcp_get_param()->local_interface);
+	char *addr = xkcp_get_param()->local_addr;
 	if (!addr) {
-		debug(LOG_ERR, "get_iface_ip [%s] failed", xkcp_get_param()->local_interface);
+		debug(LOG_ERR, "local_addr not set\n");
 		exit(0);
 	}
 

@@ -192,10 +192,10 @@ static int set_xkcp_listener()
 	}
 	
 	memset(&sin, 0, sizeof(sin));
-    sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = inet_addr(addr);
-    sin.sin_port = htons(lport);
-	
+	sin.sin_family = AF_INET;
+	sin.sin_addr.s_addr = inet_addr(addr);
+	sin.sin_port = htons(lport);
+
 	int xkcp_fd = socket(AF_INET, SOCK_DGRAM, 0);
 	
 	if (bind(xkcp_fd, (struct sockaddr *) &sin, sizeof(sin))) {
